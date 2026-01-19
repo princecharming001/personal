@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Personal Website
+
+Minimal personal site with subtle video game aesthetics and smooth animations.
+
+## Design Features
+
+**Visual Style:**
+- **Beige background** with pixelated grid pattern
+- **Blue-violet accent** (#7C3AED) - changed from orange
+- Clean typography with subtle effects
+- Video game inspired elements
+
+**Animations & Effects:**
+- ✨ Typing animation on heading with blinking cursor
+- 🎮 Pixelated background grid (subtle)
+- ⭐ Floating particles
+- 🌟 Hover glow effects on links
+- 📍 Pixel corner decorations
+- 🎯 Smooth slide animations on list items
+- 💫 Scale effects on buttons
+- 🔷 Animated progress bars
+- ⚡ Underline animations on links
+
+**Interactive Elements:**
+- Hover effects with translations
+- Button scale on click
+- Glow shadows on hover
+- Smooth transitions throughout
+
+## Tech Stack
+
+- Next.js 16
+- Tailwind CSS
+- Framer Motion concepts (CSS animations)
+- React Hooks for typing effect
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Customization
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Edit `app/page.tsx`:
+- Change accent color (replace `#7C3AED` and `#6D28D9`)
+- Adjust animation speeds
+- Modify particle count
+- Update content
 
-## Learn More
+## Features
 
-To learn more about Next.js, take a look at the following resources:
+✅ Typing animation on load
+✅ Pixelated grid background
+✅ Floating particle effects
+✅ Smooth hover animations
+✅ Glow effects on interactive elements
+✅ Pixel-style corner decorations
+✅ Responsive design
+✅ Performance optimized
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
