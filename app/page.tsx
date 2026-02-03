@@ -243,7 +243,7 @@ export default function Home() {
                   <div className="relative pl-8">
                   <div className="absolute left-0 top-[6px] w-2 h-2 bg-[#C4B5FD] rounded-full" />
                   <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                    became a founding eng offer at <a href="https://www.linkedin.com/company/prosimo-io/posts/?feedView=all" target="_blank" className="text-[#7C3AED] hover:underline font-semibold">prosimo</a> <br/>
+                    worked as a founding eng at <a href="https://www.linkedin.com/company/prosimo-io/posts/?feedView=all" target="_blank" className="text-[#7C3AED] hover:underline font-semibold">prosimo</a> <br/>
                     got acquired by palo alto networks ($10B)
                   </p>
                 </div>
@@ -270,7 +270,7 @@ export default function Home() {
                   <div className="relative pl-8">
                   <div className="absolute left-0 top-[6px] w-2 h-2 bg-[#C4B5FD] rounded-full" />
                   <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                    full-sweeped college apps (except stanford + some ivies)<br/>
+                    full-sweeped college apps (except stanford)<br/>
                     started freshman year at berkeley
                   </p>
                 </div>
