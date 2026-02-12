@@ -107,7 +107,7 @@ export default function Home() {
             </p>
             <div className="space-y-3">
               {[
-                { text: '7 ventures across industries, 2 acqusitions' },
+                { text: '6 ventures across industries, 2 acqusitions' },
                 { text: "scaled to 1M+ users across products" },
                 { text: "developed data systems for the nba, verizon, etc" },
                 { text: "head of an ai medical research team as a uc berkeley freshman" },
