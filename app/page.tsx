@@ -137,10 +137,6 @@ export default function Home() {
             <div className="space-y-3">
               {[
                 { name: "amma", desc: "ai healthtech startup in stealth mode" },
-                { name: "cannon app", desc: "the future of computer vision" },
-                { name: "paperghost", desc: "linkedin ghostwriting agency for founders" },
-                { name: "modeling", desc: "im only going to be in my prime once" },
-                { name: "side projects", desc: "bringing my childhood dreams to life" },
               ].map((project, i) => (
                 <div
                   key={i}
