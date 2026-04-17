@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { BOOKING_OPTIONS } from "@/lib/booking-config";
 import { listAvailableSlots } from "@/lib/google-calendar";
 
+export const runtime = "nodejs";
+
 export async function GET(request: NextRequest) {
   try {
     const durationParam = request.nextUrl.searchParams.get("duration");
@@ -18,7 +20,10 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { error: "Failed to load availability.", details: message },
+      {
+        error: "Failed to load availability.",
+        details: message,
+      },
       { status: 500 }
     );
   }

@@ -3,6 +3,8 @@ import { BOOKING_OPTIONS, type BookingOptionId } from "@/lib/booking-config";
 import { slotIsAvailable } from "@/lib/google-calendar";
 import { getStripe } from "@/lib/stripe";
 
+export const runtime = "nodejs";
+
 type Payload = {
   optionId: BookingOptionId;
   slotStartIso: string;

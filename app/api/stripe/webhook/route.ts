@@ -5,6 +5,8 @@ import { BOOKING_OPTIONS, type BookingOptionId } from "@/lib/booking-config";
 import { createCalendarEvent, slotIsAvailable } from "@/lib/google-calendar";
 import { getStripe } from "@/lib/stripe";
 
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   const stripe = getStripe();
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;

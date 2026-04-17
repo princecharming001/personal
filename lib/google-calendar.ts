@@ -8,16 +8,43 @@ import {
 
 type BusyInterval = { start: Date; end: Date };
 
+function normalizePrivateKey(raw: string | undefined) {
+  if (!raw) return "";
+
+  // Vercel/dashboard UIs sometimes wrap env values in quotes.
+  let key = raw.trim();
+  if (
+    (key.startsWith('"') && key.endsWith('"')) ||
+    (key.startsWith("'") && key.endsWith("'"))
+  ) {
+    key = key.slice(1, -1);
+  }
+
+  // Common formats:
+  // - JSON-style: "-----BEGIN...\\n...\\n-----END..."
+  // - Multiline pasted directly into Vercel (actual newlines)
+  key = key.replace(/\\r\\n/g, "\\n").replace(/\\r/g, "\\n");
+  key = key.replace(/\\n/g, "\n");
+
+  // If someone accidentally doubled-escaped newlines in the env UI
+  key = key.replace(/\n\n-----END/g, "\n-----END");
+
+  return key.trim();
+}
+
 function getGoogleCalendarClient() {
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(
-    /\\n/g,
-    "\n"
-  );
+  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL?.trim();
+  const privateKey = normalizePrivateKey(process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY);
 
   if (!email || !privateKey) {
     throw new Error(
       "Missing GOOGLE_SERVICE_ACCOUNT_EMAIL or GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY."
+    );
+  }
+
+  if (!privateKey.includes("BEGIN PRIVATE KEY")) {
+    throw new Error(
+      "Invalid GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY format (expected PEM with BEGIN PRIVATE KEY)."
     );
   }
 

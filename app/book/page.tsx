@@ -7,6 +7,38 @@ import { useSearchParams } from "next/navigation";
 type OptionId = "30" | "60";
 type Slot = { start: string; end: string };
 
+const DISPLAY_TZ = "America/Los_Angeles";
+
+function getDayKey(iso: string) {
+  const d = new Date(iso);
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: DISPLAY_TZ,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  // en-CA yields YYYY-MM-DD
+  return formatter.format(d);
+}
+
+function formatDayLabel(dayKey: string) {
+  const anchor = `${dayKey}T12:00:00`;
+  return new Date(anchor).toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    timeZone: DISPLAY_TZ,
+  });
+}
+
+function formatTimeLabel(iso: string) {
+  return new Date(iso).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: DISPLAY_TZ,
+  });
+}
+
 function BookPageInner() {
   const searchParams = useSearchParams();
 
@@ -17,6 +49,7 @@ function BookPageInner() {
 
   const [slots, setSlots] = useState<Slot[]>([]);
   const [slotStartIso, setSlotStartIso] = useState<string>("");
+  const [selectedDayKey, setSelectedDayKey] = useState<string>("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -33,7 +66,9 @@ function BookPageInner() {
       .then(async (res) => {
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));
-          throw new Error(data.error || "Failed to load slots.");
+          const detail =
+            typeof data.details === "string" ? data.details : undefined;
+          throw new Error(detail || data.error || "Failed to load slots.");
         }
         return res.json();
       })
@@ -41,6 +76,8 @@ function BookPageInner() {
         if (!isMounted) return;
         const nextSlots = (data.slots || []) as Slot[];
         setSlots(nextSlots);
+        const firstDay = nextSlots[0] ? getDayKey(nextSlots[0].start) : "";
+        setSelectedDayKey(firstDay);
         setSlotStartIso(nextSlots[0]?.start || "");
       })
       .catch((err: unknown) => {
@@ -68,8 +105,29 @@ function BookPageInner() {
       hour: "numeric",
       minute: "2-digit",
       timeZoneName: "short",
+      timeZone: DISPLAY_TZ,
     });
   }, [slotStartIso]);
+
+  const slotsByDay = useMemo(() => {
+    const map = new Map<string, Slot[]>();
+    for (const slot of slots) {
+      const key = getDayKey(slot.start);
+      const existing = map.get(key);
+      if (existing) existing.push(slot);
+      else map.set(key, [slot]);
+    }
+    return map;
+  }, [slots]);
+
+  const dayKeys = useMemo(() => {
+    return Array.from(slotsByDay.keys()).sort();
+  }, [slotsByDay]);
+
+  const slotsForSelectedDay = useMemo(() => {
+    if (!selectedDayKey) return [];
+    return slotsByDay.get(selectedDayKey) || [];
+  }, [slotsByDay, selectedDayKey]);
 
   async function handleCheckoutStart() {
     if (!optionId) return;
@@ -308,6 +366,9 @@ function BookPageInner() {
                 <p className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-4 font-bold">
                   choose time
                 </p>
+                <p className="text-[11px] text-gray-500 font-light mb-6">
+                  shown in {DISPLAY_TZ.replace(/_/g, " ")}
+                </p>
                 {loadingSlots ? (
                   <p className="text-sm text-gray-500">Loading available slots...</p>
                 ) : slots.length === 0 ? (
@@ -315,24 +376,63 @@ function BookPageInner() {
                     No open slots in the next two weeks. Check back soon.
                   </p>
                 ) : (
-                  <select
-                    value={slotStartIso}
-                    onChange={(e) => setSlotStartIso(e.target.value)}
-                    className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm bg-white"
-                  >
-                    {slots.map((slot) => (
-                      <option key={slot.start} value={slot.start}>
-                        {new Date(slot.start).toLocaleString("en-US", {
-                          weekday: "short",
-                          month: "short",
-                          day: "numeric",
-                          hour: "numeric",
-                          minute: "2-digit",
-                          timeZoneName: "short",
-                        })}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="space-y-6">
+                    <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+                      {dayKeys.map((key) => {
+                        const count = slotsByDay.get(key)?.length || 0;
+                        const active = key === selectedDayKey;
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => {
+                              setSelectedDayKey(key);
+                              const first = slotsByDay.get(key)?.[0]?.start || "";
+                              setSlotStartIso(first);
+                            }}
+                            className={`
+                              shrink-0 rounded-full border px-4 py-2 text-left transition-all
+                              ${active
+                                ? "border-[#7C3AED] bg-[#7C3AED]/10"
+                                : "border-gray-200 bg-white hover:border-gray-300"
+                              }
+                            `}
+                          >
+                            <p className="text-[11px] uppercase tracking-[0.15em] font-bold text-gray-500">
+                              {formatDayLabel(key)}
+                            </p>
+                            <p className="text-xs text-gray-600 mt-1">
+                              {count} open
+                            </p>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {slotsForSelectedDay.map((slot) => {
+                        const active = slot.start === slotStartIso;
+                        return (
+                          <button
+                            key={slot.start}
+                            type="button"
+                            onClick={() => setSlotStartIso(slot.start)}
+                            className={`
+                              rounded-xl border px-3 py-2 text-sm transition-all
+                              ${active
+                                ? "border-[#7C3AED] bg-white shadow-[0_8px_30px_-18px_rgba(124,58,237,0.35)]"
+                                : "border-gray-200 bg-white/70 hover:border-gray-300"
+                              }
+                            `}
+                          >
+                            <span className="font-semibold text-gray-900">
+                              {formatTimeLabel(slot.start)}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 )}
                 {selectedSlotLabel && (
                   <p className="mt-3 text-xs text-gray-500">selected: {selectedSlotLabel}</p>
