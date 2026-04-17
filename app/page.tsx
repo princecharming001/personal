@@ -58,8 +58,8 @@ export default function Home() {
           <Link href="https://www.instagram.com/anishtweaksout/" target="_blank" className="text-gray-500 hover:text-[#7C3AED] transition-colors">
             Instagram
           </Link>
-          <Link href="/coach" className="text-gray-500 hover:text-[#7C3AED] transition-colors">
-            Coach
+          <Link href="/book" className="text-gray-500 hover:text-[#7C3AED] transition-colors">
+            book
           </Link>
         </div>
 
