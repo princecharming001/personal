@@ -337,6 +337,7 @@ export default function AdminEditorDot() {
 
       {visualEditing && (
         <div
+          data-admin-ui="banner"
           className="pointer-events-none fixed inset-x-0 top-0 z-[208] flex justify-center px-3 pt-3"
           aria-live="polite"
         >

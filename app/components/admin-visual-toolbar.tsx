@@ -87,6 +87,7 @@ export default function AdminVisualToolbar({ active }: Props) {
     <div
       role="toolbar"
       aria-label="Formatting"
+      data-admin-ui="toolbar"
       className="fixed top-3 left-1/2 z-[210] flex max-w-[min(96vw,680px)] -translate-x-1/2 flex-wrap items-center justify-center gap-1 rounded-xl border border-gray-200 bg-white/95 px-2 py-2 shadow-lg backdrop-blur-sm"
     >
       <TbButton title="Bold (⌘B)" pressed={bold} onTrigger={() => runCommand("bold")}>

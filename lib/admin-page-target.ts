@@ -17,11 +17,27 @@ export function getTargetDocument(): Document | null {
   return document;
 }
 
+/**
+ * Strip every admin-only DOM node before persisting a page snapshot.
+ *
+ * This includes:
+ *  - the dot/panel (`#admin-editor-root`)
+ *  - the floating format toolbar (`[data-admin-ui="toolbar"]`)
+ *  - the edit-mode banner (`[data-admin-ui="banner"]`)
+ *  - any inline edit chrome we may have left behind
+ */
 export function stripAdminPanelFromHtml(htmlString: string): string {
   if (typeof window === "undefined") return htmlString;
   const parser = new DOMParser();
   const parsed = parser.parseFromString(htmlString, "text/html");
+
   parsed.getElementById(ADMIN_PANEL_ID)?.remove();
+  parsed.getElementById(ADMIN_INJECTED_STYLE_ID)?.remove();
+  parsed.querySelectorAll("[data-admin-ui]").forEach((n) => n.remove());
+
+  /* If the body still carries our visual-edit class, remove it. */
+  parsed.body?.classList.remove("admin-visual-edit-active");
+
   return parsed.documentElement.outerHTML;
 }
 
