@@ -6,7 +6,13 @@ type ContentOverrides = Record<string, string>;
 const DATA_DIR = path.join(process.cwd(), "data");
 const STORE_PATH = path.join(DATA_DIR, "content-overrides.json");
 
-async function ensureStore() {
+function isReadOnlyFsError(err: unknown) {
+  if (!err || typeof err !== "object") return false;
+  const code = (err as NodeJS.ErrnoException).code;
+  return code === "EROFS" || code === "EACCES" || code === "EPERM";
+}
+
+async function ensureStoreWritable() {
   await fs.mkdir(DATA_DIR, { recursive: true });
   try {
     await fs.access(STORE_PATH);
@@ -16,19 +22,33 @@ async function ensureStore() {
 }
 
 async function readStore(): Promise<ContentOverrides> {
-  await ensureStore();
-  const raw = await fs.readFile(STORE_PATH, "utf8");
   try {
+    const raw = await fs.readFile(STORE_PATH, "utf8");
     const parsed = JSON.parse(raw) as ContentOverrides;
     return parsed && typeof parsed === "object" ? parsed : {};
-  } catch {
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    /* On serverless cold-start the file may live in the read-only bundle and
+     * the dir may not exist for writing. ENOENT here means "no overrides yet". */
+    if (code === "ENOENT") return {};
     return {};
   }
 }
 
 async function writeStore(data: ContentOverrides) {
-  await ensureStore();
-  await fs.writeFile(STORE_PATH, JSON.stringify(data, null, 2), "utf8");
+  try {
+    await ensureStoreWritable();
+    await fs.writeFile(STORE_PATH, JSON.stringify(data, null, 2), "utf8");
+  } catch (err) {
+    if (isReadOnlyFsError(err)) {
+      const message =
+        "Filesystem is read-only here (typical for Vercel serverless). " +
+        "Run the editor from a writable host (local dev, VPS) and Publish to roll out, " +
+        "or add a remote store (e.g. Vercel Blob/KV).";
+      throw new Error(message);
+    }
+    throw err;
+  }
 }
 
 export async function getOverrideForPath(pathname: string) {

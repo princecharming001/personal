@@ -11,8 +11,13 @@ function isAuthed(token?: string) {
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const pathname = searchParams.get("path") ?? "/";
-  const html = await getOverrideForPath(pathname);
-  return NextResponse.json({ html });
+  try {
+    const html = await getOverrideForPath(pathname);
+    return NextResponse.json({ html });
+  } catch {
+    /* Reading should never throw thanks to the store fallback, but be safe. */
+    return NextResponse.json({ html: null });
+  }
 }
 
 export async function PUT(req: Request) {
@@ -33,6 +38,11 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "HTML is required." }, { status: 400 });
   }
 
-  await setOverrideForPath(path, sanitizePageSnapshotHtml(html));
-  return NextResponse.json({ ok: true });
+  try {
+    await setOverrideForPath(path, sanitizePageSnapshotHtml(html));
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Save failed.";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
