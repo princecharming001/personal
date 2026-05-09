@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { subscribeAdminVisualEditing } from "@/lib/admin-visual-editing-events";
 
 export default function Home() {
   const [typedText, setTypedText] = useState("");
@@ -10,6 +11,9 @@ export default function Home() {
   const [showHowIStarted, setShowHowIStarted] = useState(false);
   const [showMyGoal, setShowMyGoal] = useState(false);
   const [htmlOverride, setHtmlOverride] = useState<string | null>(null);
+  const [adminVisualEditing, setAdminVisualEditing] = useState(false);
+
+  useEffect(() => subscribeAdminVisualEditing(setAdminVisualEditing), []);
 
   useEffect(() => {
     let active = true;
@@ -27,29 +31,32 @@ export default function Home() {
     };
   }, []);
 
-  // Typing animation
+  // Typing animation (paused while admin visual edit is on)
   useEffect(() => {
+    if (adminVisualEditing) return;
     if (typedText.length < fullText.length) {
       const timeout = setTimeout(() => {
         setTypedText(fullText.slice(0, typedText.length + 1));
       }, 100);
       return () => clearTimeout(timeout);
     }
-  }, [typedText]);
+  }, [typedText, adminVisualEditing]);
 
-  // Blinking cursor
+  // Blinking cursor (paused while admin visual edit is on)
   useEffect(() => {
+    if (adminVisualEditing) return;
     const interval = setInterval(() => {
       setShowCursor(prev => !prev);
     }, 500);
     return () => clearInterval(interval);
-  }, []);
+  }, [adminVisualEditing]);
 
   if (htmlOverride) {
     return (
       <iframe
         title="HTML override"
         srcDoc={htmlOverride}
+        data-admin-editable-target=""
         className="w-screen h-screen border-0"
       />
     );

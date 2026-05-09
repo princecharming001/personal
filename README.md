@@ -84,20 +84,24 @@ A hidden editor launcher now appears as a small dot in the bottom-right corner o
 - click the dot to open the admin panel
 - enter your unlock code (`VaniAmma1` by default unless overridden by env)
 - edit full HTML for the current route (`/`, `/book`, `/coach`)
-- click **Save HTML** to persist override
-- click **Publish** to run your configured deploy command from the server
+- click **Save version** to persist the current page snapshot for that route
+- click **Publish** to deploy: either a **Vercel Deploy Hook** (recommended in production) or a **shell command** (local / VPS)
 
 Configure in `.env.local`:
 
 ```bash
 ADMIN_UNLOCK_CODE=VaniAmma1
 ADMIN_SESSION_SECRET=your-long-random-secret
-ADMIN_PUBLISH_COMMAND=npx vercel --prod --yes
+# Preferred on Vercel (Production): Project → Settings → Git → Deploy Hooks
+ADMIN_PUBLISH_WEBHOOK_URL=https://api.vercel.com/v1/integrations/deploy/...
+# Or CLI (works with `npm run dev` locally if `vercel` is available):
+ADMIN_PUBLISH_COMMAND=npx vercel deploy --prod --yes
 ```
 
 Notes:
 - this is session-protected with an HTTP-only signed cookie
-- publish is disabled until `ADMIN_PUBLISH_COMMAND` is configured
+- if **`ADMIN_PUBLISH_WEBHOOK_URL`** is set, it runs first (POST); otherwise **`ADMIN_PUBLISH_COMMAND`** is executed in shell
+- on Vercel’s serverless runtime, shell deploy often fails (no CLI); use a deploy hook instead
 - HTML overrides are stored in `data/content-overrides.json`
 
 ## Customization

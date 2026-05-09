@@ -187,6 +187,7 @@ function BookPageInner() {
       <iframe
         title="Book HTML override"
         srcDoc={htmlOverride}
+        data-admin-editable-target=""
         className="w-screen h-screen border-0"
       />
     );
