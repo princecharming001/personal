@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+import bundledOverrides from "@/data/content-overrides.json";
 
 type ContentOverrides = Record<string, string>;
 
@@ -22,17 +23,19 @@ async function ensureStoreWritable() {
 }
 
 async function readStore(): Promise<ContentOverrides> {
+  /* Prefer the live filesystem in environments where it exists (local dev,
+   * VPS) so saves are visible immediately on reload. */
   try {
     const raw = await fs.readFile(STORE_PATH, "utf8");
     const parsed = JSON.parse(raw) as ContentOverrides;
-    return parsed && typeof parsed === "object" ? parsed : {};
-  } catch (err) {
-    const code = (err as NodeJS.ErrnoException).code;
-    /* On serverless cold-start the file may live in the read-only bundle and
-     * the dir may not exist for writing. ENOENT here means "no overrides yet". */
-    if (code === "ENOENT") return {};
-    return {};
+    if (parsed && typeof parsed === "object") return parsed;
+  } catch {
+    /* fall through to bundled snapshot */
   }
+  /* On serverless (Vercel) the file may not be in the function bundle. The
+   * static import below is always inlined by the bundler regardless of the
+   * tracer/Turbopack, so reads always return the snapshot baked at deploy. */
+  return (bundledOverrides as ContentOverrides) ?? {};
 }
 
 async function writeStore(data: ContentOverrides) {
@@ -41,11 +44,11 @@ async function writeStore(data: ContentOverrides) {
     await fs.writeFile(STORE_PATH, JSON.stringify(data, null, 2), "utf8");
   } catch (err) {
     if (isReadOnlyFsError(err)) {
-      const message =
+      throw new Error(
         "Filesystem is read-only here (typical for Vercel serverless). " +
-        "Run the editor from a writable host (local dev, VPS) and Publish to roll out, " +
-        "or add a remote store (e.g. Vercel Blob/KV).";
-      throw new Error(message);
+          "Run the editor from a writable host (local dev, VPS) and Publish to roll out, " +
+          "or migrate to a remote store (Vercel Blob/KV).",
+      );
     }
     throw err;
   }
