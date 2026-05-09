@@ -77,15 +77,20 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 
 4) Use `NEXT_PUBLIC_SITE_URL` that matches your deployment domain in production.
 
-## Admin HTML Editor + Publish
+## Admin Visual Editor + Publish Pipeline
 
-A hidden editor launcher now appears as a small dot in the bottom-right corner of the site.
+> ✅ Verified end-to-end against production at `https://www.anishpolakala.com`.
+> Save on `localhost` → Publish stages, commits, pushes, and deploys to Vercel
+> in ~1–2 min, then the live site serves the saved snapshot.
 
-- click the dot to open the admin panel
-- enter your unlock code (`VaniAmma1` by default unless overridden by env)
-- edit full HTML for the current route (`/`, `/book`, `/coach`)
-- click **Save version** to persist the current page snapshot for that route
-- click **Publish** to deploy: either a **Vercel Deploy Hook** (recommended in production) or a **shell command** (local / VPS)
+A hidden editor launcher appears as a small dot in the bottom-right corner of the site.
+
+- click the dot, enter the unlock code (`VaniAmma1` by default unless overridden by env)
+- click **Start editing** — the page goes into `document.designMode = "on"` and a top format toolbar appears
+- click any text on the page and edit visually; ⌘B / ⌘I / ⌘U / ⌘Z / ⌘⇧Z work
+- pressing **Enter** inside an arrow bullet (→) clones the row beneath it
+- click **Save version** to persist the rendered snapshot for that route
+- click **Publish** to roll the saved snapshot out: stages `data/content-overrides.json`, commits, pushes to `origin HEAD`, then runs your deploy step
 
 Configure in `.env.local`:
 
@@ -98,11 +103,14 @@ ADMIN_PUBLISH_WEBHOOK_URL=https://api.vercel.com/v1/integrations/deploy/...
 ADMIN_PUBLISH_COMMAND=npx vercel deploy --prod --yes
 ```
 
-Notes:
-- this is session-protected with an HTTP-only signed cookie
-- if **`ADMIN_PUBLISH_WEBHOOK_URL`** is set, it runs first (POST); otherwise **`ADMIN_PUBLISH_COMMAND`** is executed in shell
-- on Vercel’s serverless runtime, shell deploy often fails (no CLI); use a deploy hook instead
-- HTML overrides are stored in `data/content-overrides.json`
+Pipeline details:
+- session is an HTTP-only signed cookie (`admin_session`, 6h)
+- saves are sanitized server-side with `sanitize-html` (drops `<script>`, `<iframe>`, `<object>`, `javascript:` schemes; keeps Tailwind classes/styles)
+- overrides live in `data/content-overrides.json` and are **statically imported** into the API route, which guarantees Vercel/Turbopack bundles the snapshot into the function
+- saves on Vercel (read-only FS) intentionally fail with a clear error: edit on a writable host and Publish to roll out
+- if `ADMIN_PUBLISH_WEBHOOK_URL` is set the publish endpoint POSTs to that URL after the git push and skips the shell deploy; otherwise `ADMIN_PUBLISH_COMMAND` runs
+- the editor UI surfaces a step-by-step log for every Publish so you can see exactly what happened
+- to opt out of the git push step set `ADMIN_PUBLISH_GIT_PUSH=false`
 
 ## Customization
 
