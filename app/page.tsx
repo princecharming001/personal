@@ -9,6 +9,23 @@ export default function Home() {
   const [showCursor, setShowCursor] = useState(true);
   const [showHowIStarted, setShowHowIStarted] = useState(false);
   const [showMyGoal, setShowMyGoal] = useState(false);
+  const [htmlOverride, setHtmlOverride] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/admin/content?path=/")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!active) return;
+        if (typeof data.html === "string" && data.html.trim()) {
+          setHtmlOverride(data.html);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Typing animation
   useEffect(() => {
@@ -27,6 +44,16 @@ export default function Home() {
     }, 500);
     return () => clearInterval(interval);
   }, []);
+
+  if (htmlOverride) {
+    return (
+      <iframe
+        title="HTML override"
+        srcDoc={htmlOverride}
+        className="w-screen h-screen border-0"
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white text-gray-800">
@@ -112,7 +139,7 @@ export default function Home() {
                 { text: "developed data systems for the nba, verizon, etc" },
                 { text: "head of an ai medical research team as a uc berkeley freshman" },
                 { text: "lead 50+ full-time employees before getting my drivers license" },
-                { text: "financially independent @ 15 (and lost it all trying new shit)" },
+                { text: "bought my mom a car @ 15" },
               ].map((item, i) => (
                 <div
                   key={i}

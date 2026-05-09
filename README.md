@@ -77,6 +77,29 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 
 4) Use `NEXT_PUBLIC_SITE_URL` that matches your deployment domain in production.
 
+## Admin HTML Editor + Publish
+
+A hidden editor launcher now appears as a small dot in the bottom-right corner of the site.
+
+- click the dot to open the admin panel
+- enter your unlock code (`VaniAmma1` by default unless overridden by env)
+- edit full HTML for the current route (`/`, `/book`, `/coach`)
+- click **Save HTML** to persist override
+- click **Publish** to run your configured deploy command from the server
+
+Configure in `.env.local`:
+
+```bash
+ADMIN_UNLOCK_CODE=VaniAmma1
+ADMIN_SESSION_SECRET=your-long-random-secret
+ADMIN_PUBLISH_COMMAND=npx vercel --prod --yes
+```
+
+Notes:
+- this is session-protected with an HTTP-only signed cookie
+- publish is disabled until `ADMIN_PUBLISH_COMMAND` is configured
+- HTML overrides are stored in `data/content-overrides.json`
+
 ## Customization
 
 Edit `app/page.tsx`:

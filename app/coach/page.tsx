@@ -1,8 +1,37 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function CoachPage() {
+  const [htmlOverride, setHtmlOverride] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/admin/content?path=/coach")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!active) return;
+        if (typeof data.html === "string" && data.html.trim()) {
+          setHtmlOverride(data.html);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (htmlOverride) {
+    return (
+      <iframe
+        title="Coach HTML override"
+        srcDoc={htmlOverride}
+        className="w-screen h-screen border-0"
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white text-gray-800">
       {/* Hero Section - Matching main page aesthetic */}

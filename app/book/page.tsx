@@ -56,6 +56,23 @@ function BookPageInner() {
   const [notes, setNotes] = useState("");
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [error, setError] = useState("");
+  const [htmlOverride, setHtmlOverride] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/admin/content?path=/book")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!active) return;
+        if (typeof data.html === "string" && data.html.trim()) {
+          setHtmlOverride(data.html);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (step !== "checkout" || !optionId) return;
@@ -165,6 +182,16 @@ function BookPageInner() {
     window.location.assign(data.url);
   }
 
+  if (htmlOverride) {
+    return (
+      <iframe
+        title="Book HTML override"
+        srcDoc={htmlOverride}
+        className="w-screen h-screen border-0"
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white text-gray-800">
       <section className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100">
@@ -222,8 +249,8 @@ function BookPageInner() {
                 "scaled lemonhat to 100K+ users in under a year",
                 "1M+ users across projects (organic growth)",
                 "led growth at 6 startups (2 acquisitions)",
-                "generated 200M+ views",
-                "7.5K Linkedin followers in < 2 months",
+                "generated 1.2B+ views",
+                "8K Linkedin followers in < 2 months",
               ].map((item) => (
                 <div key={item} className="flex gap-3">
                   <span className="text-[#7C3AED] mt-0 font-bold leading-[1.7]">→</span>
