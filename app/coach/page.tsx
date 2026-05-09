@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { extractSnapshotBody } from "@/lib/extract-snapshot-body";
 
 export default function CoachPage() {
   const [htmlOverride, setHtmlOverride] = useState<string | null>(null);
@@ -24,11 +25,9 @@ export default function CoachPage() {
 
   if (htmlOverride) {
     return (
-      <iframe
-        title="Coach HTML override"
-        srcDoc={htmlOverride}
-        data-admin-editable-target=""
-        className="w-screen h-screen border-0"
+      <div
+        data-admin-override-root=""
+        dangerouslySetInnerHTML={{ __html: extractSnapshotBody(htmlOverride) }}
       />
     );
   }

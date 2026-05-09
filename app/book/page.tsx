@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { extractSnapshotBody } from "@/lib/extract-snapshot-body";
 
 type OptionId = "30" | "60";
 type Slot = { start: string; end: string };
@@ -184,11 +185,9 @@ function BookPageInner() {
 
   if (htmlOverride) {
     return (
-      <iframe
-        title="Book HTML override"
-        srcDoc={htmlOverride}
-        data-admin-editable-target=""
-        className="w-screen h-screen border-0"
+      <div
+        data-admin-override-root=""
+        dangerouslySetInnerHTML={{ __html: extractSnapshotBody(htmlOverride) }}
       />
     );
   }

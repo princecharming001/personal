@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { subscribeAdminVisualEditing } from "@/lib/admin-visual-editing-events";
+import { extractSnapshotBody } from "@/lib/extract-snapshot-body";
 
 export default function Home() {
   const [typedText, setTypedText] = useState("");
@@ -53,11 +54,9 @@ export default function Home() {
 
   if (htmlOverride) {
     return (
-      <iframe
-        title="HTML override"
-        srcDoc={htmlOverride}
-        data-admin-editable-target=""
-        className="w-screen h-screen border-0"
+      <div
+        data-admin-override-root=""
+        dangerouslySetInnerHTML={{ __html: extractSnapshotBody(htmlOverride) }}
       />
     );
   }

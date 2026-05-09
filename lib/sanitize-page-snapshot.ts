@@ -86,14 +86,19 @@ export function sanitizePageSnapshotHtml(html: string): string {
       "symbol",
       "title",
       "text",
+      /*
+       * Intentionally NOT including <link>, <script>, <meta>, <style>:
+       * The page renders saved overrides INLINE inside the live React tree,
+       * so it must inherit the live deployment's CSS rather than reference
+       * environment-specific Turbopack/Next chunks that change between dev
+       * and prod and break iframe rendering.
+       */
     ],
     allowedAttributes: {
       "*": ["class", "id", "style", "lang", "dir", "title", "data-admin-editable-target"],
       a: ["href", "name", "target", "rel"],
       img: ["src", "srcset", "alt", "width", "height", "loading", "decoding"],
       source: ["src", "srcset", "type", "media", "sizes"],
-      link: ["rel", "href", "as", "type", "media", "sizes", "crossorigin"],
-      meta: ["name", "content", "charset", "http-equiv"],
       svg: ["viewBox", "xmlns", "fill", "stroke", "width", "height", "preserveAspectRatio"],
       path: ["d", "fill", "stroke", "stroke-width", "fill-rule", "clip-rule"],
       g: ["fill", "stroke", "transform"],
@@ -113,6 +118,9 @@ export function sanitizePageSnapshotHtml(html: string): string {
       object: () => ({ tagName: "div", attribs: {}, text: "" }),
       embed: () => ({ tagName: "div", attribs: {}, text: "" }),
       base: () => ({ tagName: "div", attribs: {}, text: "" }),
+      link: () => ({ tagName: "div", attribs: {}, text: "" }),
+      meta: () => ({ tagName: "div", attribs: {}, text: "" }),
+      style: () => ({ tagName: "div", attribs: {}, text: "" }),
     },
   });
 }
