@@ -156,7 +156,7 @@ export default function Home() {
           <Reveal delay={240}>
             <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
               <a
-                href={`mailto:${contact.email}`}
+                href="#contact"
                 className="group inline-flex h-11 items-center gap-2 rounded-full bg-[#0A0A0A] px-6 text-[15px] font-medium text-white transition-colors hover:bg-[#7C3AED]"
               >
                 Get in touch <Arrow />
