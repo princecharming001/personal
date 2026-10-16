@@ -149,7 +149,7 @@ export default function Home() {
           <Reveal delay={160}>
             <p className="mt-7 max-w-[520px] text-[18px] leading-[1.6] text-black/50 sm:text-[19px]">
               I&apos;m Anish, a product lead with 7 years of experience and 2x exited founder located in the SF area.
-              I&apos;ve led companies from concept to 8-figure acquisition, and now I lead product at Palo while studying
+              I&apos;ve taken companies from concept to 8-figure acquisition, and now I lead product at Palo while studying
               data science at UC Berkeley.
             </p>
           </Reveal>
