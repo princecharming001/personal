@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme inline {
+  --font-serif: var(--font-newsreader), "Times New Roman", Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -14,6 +19,10 @@
     font-family: var(--font-space-grotesk), var(--font-inter), sans-serif;
     font-weight: 700;
     letter-spacing: -0.02em;
+  }
+
+  .font-serif {
+    font-weight: 450;
   }
 }
 

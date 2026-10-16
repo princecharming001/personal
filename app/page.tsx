@@ -1,20 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { subscribeAdminVisualEditing } from "@/lib/admin-visual-editing-events";
+import { useEffect, useState } from "react";
+import { ArrowRight, CalendarDays, ChevronDown, MessageCircle } from "lucide-react";
 import { extractSnapshotBody } from "@/lib/extract-snapshot-body";
+import { stats } from "@/lib/resume";
+import HalftoneFace from "./components/halftone-face";
+import PortfolioApp from "./components/portfolio-app";
+
+const NAV = [
+  { label: "Work", href: "#work" },
+  { label: "Story", href: "#story" },
+  { label: "Coaching", href: "/coach" },
+  { label: "Book", href: "/book" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/anishpolakala/", out: true },
+];
+
+const PREVIOUSLY = [
+  { name: "Palo", mark: "P", bg: "#7C3AED", fg: "#fff" },
+  { name: "Lemonhat", mark: "L", bg: "#F5B70A", fg: "#3B2F00" },
+  { name: "Prosimo", mark: "P", bg: "#111", fg: "#fff" },
+];
 
 export default function Home() {
-  const [typedText, setTypedText] = useState("");
-  const fullText = "HEY, I'M ANISH";
-  const [showCursor, setShowCursor] = useState(true);
-  const [showHowIStarted, setShowHowIStarted] = useState(false);
-  const [showMyGoal, setShowMyGoal] = useState(false);
   const [htmlOverride, setHtmlOverride] = useState<string | null>(null);
-  const [adminVisualEditing, setAdminVisualEditing] = useState(false);
-
-  useEffect(() => subscribeAdminVisualEditing(setAdminVisualEditing), []);
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -32,26 +42,6 @@ export default function Home() {
     };
   }, []);
 
-  // Typing animation (paused while admin visual edit is on)
-  useEffect(() => {
-    if (adminVisualEditing) return;
-    if (typedText.length < fullText.length) {
-      const timeout = setTimeout(() => {
-        setTypedText(fullText.slice(0, typedText.length + 1));
-      }, 100);
-      return () => clearTimeout(timeout);
-    }
-  }, [typedText, adminVisualEditing]);
-
-  // Blinking cursor (paused while admin visual edit is on)
-  useEffect(() => {
-    if (adminVisualEditing) return;
-    const interval = setInterval(() => {
-      setShowCursor(prev => !prev);
-    }, 500);
-    return () => clearInterval(interval);
-  }, [adminVisualEditing]);
-
   if (htmlOverride) {
     return (
       <div
@@ -62,387 +52,200 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white text-gray-800">
-      {/* Hero Section - Compact */}
-      <section className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100">
-        {/* Animated gradient orbs */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#7C3AED]/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-        </div>
+    <div className="min-h-screen bg-white text-[#0A0A0A]">
+      {/* nav */}
+      <header className="relative z-20 mx-auto flex max-w-[1240px] items-center justify-between px-4 py-5 sm:px-8 lg:px-[86px]">
+        <Link href="/" className="font-serif text-[24px] tracking-[-0.02em] sm:text-[28px]">
+          Anish Polakala
+        </Link>
+        <nav className="hidden items-center gap-8 text-[16px] text-black/75 lg:flex">
+          {NAV.map((n) =>
+            n.out ? (
+              <a key={n.label} href={n.href} target="_blank" rel="noreferrer" className="transition-colors hover:text-black">
+                {n.label}
+              </a>
+            ) : (
+              <Link key={n.label} href={n.href} className="transition-colors hover:text-black">
+                {n.label}
+              </Link>
+            ),
+          )}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setAboutOpen((o) => !o)}
+              className="flex items-center gap-1 transition-colors hover:text-black"
+              aria-expanded={aboutOpen}
+            >
+              More <ChevronDown size={14} className="text-black/40" />
+            </button>
+            {aboutOpen && (
+              <div className="absolute left-1/2 top-9 w-48 -translate-x-1/2 rounded-xl border border-black/[0.08] bg-white p-1.5 text-[15px] shadow-[0_12px_40px_-12px_rgba(0,0,0,0.2)]">
+                <a href="https://www.instagram.com/anishtweaksout/" target="_blank" rel="noreferrer" className="block rounded-lg px-3 py-2 hover:bg-black/[0.04]">
+                  Instagram
+                </a>
+                <a href="https://www.lemonhat.io/" target="_blank" rel="noreferrer" className="block rounded-lg px-3 py-2 hover:bg-black/[0.04]">
+                  Lemonhat
+                </a>
+                <a href="https://www.palo.ai/" target="_blank" rel="noreferrer" className="block rounded-lg px-3 py-2 hover:bg-black/[0.04]">
+                  Palo
+                </a>
+              </div>
+            )}
+          </div>
+        </nav>
+        <a
+          href="mailto:anish.polakala@gmail.com"
+          className="rounded-[10px] border border-black/[0.09] bg-white px-5 py-2.5 text-[15px] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors hover:bg-black/[0.02]"
+        >
+          Contact
+        </a>
+      </header>
 
-        {/* Minimal grid lines */}
-        <div className="absolute inset-0 opacity-[0.02]">
-          <div className="h-full w-full" style={{
-            backgroundImage: 'linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)',
-            backgroundSize: '80px 80px'
-          }} />
-        </div>
-
-        {/* Top Navigation Links - Fixed */}
-        <div className="fixed top-8 right-8 z-50 flex items-center gap-6 text-xs uppercase tracking-[0.15em] font-bold h-14">
-          <Link href="mailto:anish.polakala@gmail.com" className="text-gray-500 hover:text-[#7C3AED] transition-colors">
-            Contact
-          </Link>
-          <Link href="https://www.linkedin.com/in/anishpolakala/" target="_blank" className="text-gray-500 hover:text-[#7C3AED] transition-colors">
-            LinkedIn
-          </Link>
-          <Link href="https://www.instagram.com/anishtweaksout/" target="_blank" className="text-gray-500 hover:text-[#7C3AED] transition-colors">
-            Instagram
-          </Link>
-          <Link href="/book" className="text-gray-500 hover:text-[#7C3AED] transition-colors">
-            book
-          </Link>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 max-w-4xl mx-auto px-6 pt-48 pb-20">
-
-          {/* Name and Intro */}
-          <div className="mb-16">
-            <h1 className="text-5xl font-bold mb-6 tracking-tight font-[family-name:var(--font-inter)]">
-              YO I'M ANISH<span className="animate-blink">_</span>
+      {/* hero */}
+      <section className="mx-auto grid max-w-[1240px] items-center gap-6 px-4 pb-14 pt-10 sm:px-8 sm:pt-20 lg:grid-cols-[1.05fr_1fr] lg:px-[86px] lg:pt-[110px]">
+        <div className="order-2 lg:order-1">
+          <a
+            href="https://www.palo.ai/"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 text-[15px] text-black/50 transition-colors hover:text-black/70"
+          >
+            <span className="grid size-[22px] place-items-center rounded-[5px] bg-[#7C3AED] text-[12px] font-semibold text-white">P</span>
+            CPO at <span className="font-medium text-black">Palo</span>
+          </a>
+          <h1 className="mt-5 font-serif text-[52px] leading-[1.02] tracking-[-0.035em] sm:text-[68px] lg:text-[76px]">
+            I build <span className="text-[#7C3AED]">products</span>
+            <br />
+            from zero to exit
           </h1>
-            <p className="text-lg text-gray-700 mb-2">
-              serial founder | builder | coach | model
+          <p className="mt-7 max-w-[500px] text-[19px] leading-[1.6] text-black/50 sm:text-[21px]">
+            Two-time acquired product lead and Berkeley data science student, turning customer insight into products that
+            scale.
+          </p>
+          <div className="mt-9 flex flex-wrap gap-3">
+            <a
+              href="mailto:anish.polakala@gmail.com"
+              className="rounded-[12px] bg-gradient-to-b from-[#8B4BEA] to-[#6D28D9] px-10 py-3.5 text-[17px] font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_6px_16px_-6px_rgba(109,40,217,0.6)] transition-transform hover:-translate-y-px"
+            >
+              Get in touch
+            </a>
+            <Link
+              href="/book"
+              className="flex items-center gap-2.5 rounded-[12px] border border-black/[0.09] bg-white px-10 py-3.5 text-[17px] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors hover:bg-black/[0.02]"
+            >
+              <CalendarDays size={18} strokeWidth={1.8} /> Book a call
+            </Link>
+          </div>
+
+          <p className="mt-16 text-[13px] font-medium uppercase tracking-[0.08em] text-black/55">Built products at</p>
+          <div className="mt-4 flex flex-wrap items-center gap-x-10 gap-y-3 text-[17px]">
+            {PREVIOUSLY.map((c) => (
+              <span key={c.name} className="flex items-center gap-2.5">
+                <span
+                  className="grid size-[22px] place-items-center rounded-[6px] text-[11px] font-bold"
+                  style={{ background: c.bg, color: c.fg }}
+                >
+                  {c.mark}
+                </span>
+                {c.name}
+              </span>
+            ))}
+            <a href="#work" className="flex items-center gap-1.5 text-black/45 transition-colors hover:text-black/70">
+              More <ArrowRight size={16} />
+            </a>
+          </div>
+        </div>
+
+        <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
+          <HalftoneFace
+            src="/face/anish-turn.mp4"
+            poster="/face/anish-bust.jpg"
+            className="aspect-square w-full max-w-[320px] sm:max-w-[460px] lg:max-w-[580px]"
+          />
+        </div>
+      </section>
+
+      {/* the "app" */}
+      <section id="work" className="mx-auto max-w-[1420px] scroll-mt-6 px-4 sm:px-8 lg:px-10">
+        <PortfolioApp />
+      </section>
+
+      {/* stats */}
+      <section className="mx-auto max-w-[1240px] px-4 py-24 sm:px-8 lg:px-[86px]">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-12 border-y border-black/[0.07] py-14 lg:grid-cols-4">
+          {stats.map((s) => (
+            <div key={s.label}>
+              <p className="font-serif text-[46px] leading-none tracking-[-0.03em] sm:text-[56px]">{s.value}</p>
+              <p className="mt-3 text-[15px] text-black/50">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* story */}
+      <section id="story" className="mx-auto max-w-[1240px] scroll-mt-6 px-4 sm:px-8 lg:px-[86px]">
+        <p className="font-mono text-[13px] uppercase tracking-[0.08em] text-black/45">(01) Why</p>
+        <div className="mt-6 grid gap-12 lg:grid-cols-[1.3fr_1fr]">
+          <p className="font-serif text-[34px] leading-[1.15] tracking-[-0.025em] sm:text-[44px]">
+            My dad worked <span className="text-[#7C3AED]">10x harder</span> than me. I&apos;m taking the risks he was
+            never able to.
+          </p>
+          <div className="space-y-4 text-[17px] leading-[1.7] text-black/60">
+            <p>
+              First he was the middle-class kid paying his family&apos;s electricity bill. Then the student paying off his
+              own tuition. Then the husband on a visa with two babies to feed.
             </p>
-            <p className="text-gray-600">
-            <span className="text-[#7C3AED] font-medium">18 @ san francisco</span>
-            </p>
+            <p>Three jobs at once. 5am commutes. 96-hour shifts. No safety net, no do-overs, dreams parked.</p>
+            <p className="text-black/85">He&apos;s the reason I&apos;m going all in.</p>
           </div>
         </div>
       </section>
 
-      {/* Rest of the content */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-gray-100 to-white">
-        {/* Subtle gradient mesh */}
-        <div className="fixed inset-0 pointer-events-none opacity-30">
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#7C3AED]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
-        </div>
-
-
-        <div className="max-w-3xl mx-auto px-6 py-16 relative z-10">
-
-
-          {/* Quote */}
-          <p className="mb-8 text-[15px] text-gray-600 font-light italic">
-            "The world belongs to the energetic."    - Ralph Waldo Emerson
+      {/* cta */}
+      <section className="mx-auto max-w-[1240px] px-4 py-28 sm:px-8 lg:px-[86px]">
+        <div className="relative overflow-hidden rounded-[22px] border border-black/[0.07] bg-[#F7F7F7] px-6 py-16 text-center sm:px-12">
+          <p className="font-serif text-[40px] leading-[1.05] tracking-[-0.03em] sm:text-[56px]">
+            Let&apos;s build <span className="text-[#7C3AED]">something</span>
           </p>
-
-
-          {/* Achievements with stagger animation */}
-          <div className="mb-16">
-            <p className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-6 flex items-center gap-2 font-bold">
-              <span className="w-2 h-2 bg-[#7C3AED] rounded-full animate-pulse" />
-              legendary moments
-            </p>
-            <div className="space-y-3">
-              {[
-                { text: '6 ventures across industries, 2 acqusitions' },
-                { text: "scaled to 1M+ users across products" },
-                { text: "developed data systems for the nba, verizon, etc" },
-                { text: "head of an ai medical research team as a uc berkeley freshman" },
-                { text: "lead 50+ full-time employees before getting my drivers license" },
-                { text: "bought my mom a car @ 15" },
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  className="flex gap-3 group hover:translate-x-2 transition-transform"
-                  style={{ animationDelay: `${i * 0.1}s` }}
-                >
-                  <span className="text-[#7C3AED] mt-0 group-hover:scale-125 transition-transform font-bold leading-[1.7]">→</span>
-                  <p className="text-gray-700 group-hover:text-gray-900 transition-colors font-light text-[15px] leading-relaxed">
-                    {item.text}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Projects with hover effects */}
-          <div className="mb-16">
-            <p className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-6 flex items-center gap-2 font-bold">
-              <span className="w-2 h-2 bg-[#7C3AED] rounded-full animate-pulse" />
-              ongoing quests
-            </p>
-            <div className="space-y-3">
-              {[
-                { name: "amma", desc: "ai healthtech startup in stealth mode" },
-              ].map((project, i) => (
-                <div
-                  key={i}
-                  className="flex gap-3 group hover:translate-x-2 transition-transform"
-                >
-                  <span className="text-[#7C3AED] mt-0 group-hover:scale-125 transition-transform font-bold leading-[1.7]">→</span>
-                  <p className="text-gray-700 font-light text-[15px] leading-relaxed">
-                    <Link
-                      href="#"
-                      className="text-[#7C3AED] hover:text-[#6D28D9] font-semibold relative inline-block group/link"
-                    >
-                      {project.name}
-                      <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-[#7C3AED] group-hover/link:w-full transition-all duration-300" />
-                    </Link>{" "}
-                    — {project.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Philosophy */}
-          <div className="mb-16 max-w-2xl">
-            <p className="text text-gray-700 leading-relaxed mb-4 hover:text-gray-900 transition-colors font-light">
-            i spent a lot of time alone as a child (not always by choice).<br></br>
-            this allowed me to develop my own unique style of thinking without external influence.<br></br>
-            it's shaped everything i've built so far.
-            <br></br><br></br>if all of this doesn't work out, i'm perfectly happy being homeless for the rest of my life. <br></br>
-            at least i'll know i tried.
-            </p>
-          </div>
-
-          {/* TLDR / Lore */}
-          <div className="mb-16 max-w-2xl">
-            <p className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-6 flex items-center gap-2 font-bold">
-              <span className="w-2 h-2 bg-[#7C3AED] rounded-full" />
-              lore
-            </p>
-            
-            {/* Timeline */}
-            <div className="mb-8 relative ml-12">
-              {/* Vertical line */}
-              <div className="absolute left-1 top-0 bottom-0 w-px bg-gray-200" />
-              
-              <div className="space-y-8">
-                {/* Timeline Item 1 */}
-                <div className="relative pl-8">
-                  <div className="absolute left-0 top-[6px] w-2 h-2 bg-[#C4B5FD] rounded-full" />
-                  <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                    my first hustle was selling my cousin's old math tests in 5th grade.
-                  </p>
-                </div>
-                
-                {/* Timeline Item 2 */}
-                <div className="relative pl-8">
-                  <div className="absolute left-0 top-[6px] w-2 h-2 bg-[#C4B5FD] rounded-full" />
-                  <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                    my dad taught me to code when i was 9 y.o.<br/>
-                  </p>
-                </div>
-                
-                {/* Timeline Item 3 */}
-                <div className="relative pl-8">
-                  <div className="absolute left-0 top-[6px] w-2 h-2 bg-[#C4B5FD] rounded-full" />
-                  <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                  started my first startup building websites for restaurants<br/>
-                  expanded to a webdev agency managing 4 full-time devs
-                  </p>
-                </div>
-
-
-
-
-                    {/* Timeline Item 3 */}
-                  <div className="relative pl-8">
-                  <div className="absolute left-0 top-[6px] w-2 h-2 bg-[#C4B5FD] rounded-full" />
-                  <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                    built a new kind of telemedicine platform for ESL patients <br/>
-                    sold to an anonymous hospital chain (1st acquisition)
-                  </p>
-                </div>
-
-
-
-                 {/* Timeline Item 3 */}
-                 <div className="relative pl-8">
-                  <div className="absolute left-0 top-[6px] w-2 h-2 bg-[#C4B5FD] rounded-full" />
-                  <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                    started skipping school to work on my side hustles <br/>
-                    founded <a href="https://www.lemonhat.io/" target="_blank" className="text-[#7C3AED] hover:underline font-semibold">lemonhat</a>: delivery system for local farms (scaled to 100K+ users)
-                  </p>
-                </div>
-
-
-
-
- 
-
-                  {/* Timeline Item 3 */}
-                  <div className="relative pl-8">
-                  <div className="absolute left-0 top-[6px] w-2 h-2 bg-[#C4B5FD] rounded-full" />
-                  <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                    worked as a founding eng at <a href="https://www.linkedin.com/company/prosimo-io/posts/?feedView=all" target="_blank" className="text-[#7C3AED] hover:underline font-semibold">prosimo</a> <br/>
-                    got acquired by palo alto networks ($10B)
-                  </p>
-                </div>
-
-                {/* Timeline Item 3 */}
-                <div className="relative pl-8">
-                  <div className="absolute left-0 top-[6px] w-2 h-2 bg-[#C4B5FD] rounded-full" />
-                  <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                    booked a couple amateur modeling shoots bc someone called me chopped
-                  </p>
-                </div>
-
-            
-                {/* Timeline Item 3 */}
-                <div className="relative pl-8">
-                  <div className="absolute left-0 top-[6px] w-2 h-2 bg-[#C4B5FD] rounded-full" />
-                  <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                    graduated valedictorian with 63.22% attendance
-                  </p>
-                </div>
-
-
-                  {/* Timeline Item 3 */}
-                  <div className="relative pl-8">
-                  <div className="absolute left-0 top-[6px] w-2 h-2 bg-[#C4B5FD] rounded-full" />
-                  <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                    full-sweeped college apps (except stanford)<br/>
-                    started freshman year at berkeley
-                  </p>
-                </div>
-
-
-
-                  {/* Timeline Item 3 */}
-                  <div className="relative pl-8">
-                  <div className="absolute left-0 top-[6px] w-2 h-2 bg-[#C4B5FD] rounded-full" />
-                  <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                    skipped my cs final for a <a href="https://www.ycombinator.com/" target="_blank" className="text-[#7C3AED] hover:underline font-semibold">yc</a> interview
-                  </p>
-                </div>
-
-              </div>
-
-
-              
-        </div>
-
-            {/* HOW I STARTED - Expandable Section */}
-            <div className="mb-6">
-              <button
-                onClick={() => setShowHowIStarted(!showHowIStarted)}
-                className="w-full bg-gray-100 hover:bg-gray-200 transition-colors rounded-lg p-6 text-left"
-              >
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xs uppercase tracking-[0.2em] text-gray-600 font-bold">
-                    MOTIVATION
-                  </h3>
-                  <span className="text-[#7C3AED] font-bold text-xs uppercase tracking-wider hover:underline">
-                    {showHowIStarted ? 'CLOSE' : 'OPEN'}
-                  </span>
-                </div>
-              </button>
-              
-              {showHowIStarted && (
-                <div className="bg-white border-2 border-gray-200 rounded-lg p-6 mt-2 space-y-6 animate-in slide-in-from-top-2 duration-300">
-                  <p className="text-gray-700 leading-relaxed font-semibold text-[15px]">
-                    my dad worked 10x harder than me.
-                  </p>
-                  
-                  <div className="space-y-3">
-                    <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                      first, he was the middle-class kid paying his family's electricity bill.
-                    </p>
-                    <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                      then the student paying off his own tuition.
-                    </p>
-                    <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                      then the husband on a visa with two babies to feed.
-                    </p>
-                  </div>
-                  
-                  <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                    3 jobs at once. 5am commutes. 96-hour shifts
-                  </p>
-                  
-                  <div className="space-y-3">
-                    <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                      no safety net. no do-overs. dreams parked.
-                    </p>
-                    <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                      his whole life was making sure someone else was safe.
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-3 pt-2">
-                    <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                      i'm taking the risks he was never able to.
-                    </p>
-                    <p className="text-gray-700 leading-relaxed font-semibold text-[15px]">
-                      he's the reason i'm going all in.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* MY GOAL - Expandable Section */}
-            <div className="mb-6">
-              <button
-                onClick={() => setShowMyGoal(!showMyGoal)}
-                className="w-full bg-gray-100 hover:bg-gray-200 transition-colors rounded-lg p-6 text-left"
-              >
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xs uppercase tracking-[0.2em] text-gray-600 font-bold">
-                    Final Level
-                  </h3>
-                  <span className="text-[#7C3AED] font-bold text-xs uppercase tracking-wider hover:underline">
-                    {showMyGoal ? 'CLOSE' : 'OPEN'}
-                  </span>
-                </div>
-              </button>
-              
-              {showMyGoal && (
-                <div className="bg-white border-2 border-gray-200 rounded-lg p-6 mt-2 space-y-4 animate-in slide-in-from-top-2 duration-300">
-                  <p className="text-gray-700 leading-relaxed font-light text-[15px]">
-                    build an empire<br></br>
-                    maybe get a girlfriend
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-
-          {/* Footer */}
-          <div className="pt-16 border-t-2 border-gray-300 text-center">
-            <p className="text-xs text-gray-500 hover:text-gray-900 transition-colors font-mono tracking-wider">
-              © 2023 anish polakala • lifemaxxer
-            </p>
+          <p className="mx-auto mt-4 max-w-md text-[17px] text-black/50">
+            Hiring for product, starting something, or want a second brain on your roadmap? I reply fast.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <a
+              href="mailto:anish.polakala@gmail.com"
+              className="rounded-[12px] bg-gradient-to-b from-[#8B4BEA] to-[#6D28D9] px-9 py-3.5 text-[16px] font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_6px_16px_-6px_rgba(109,40,217,0.6)]"
+            >
+              anish.polakala@gmail.com
+            </a>
+            <Link
+              href="/coach"
+              className="rounded-[12px] border border-black/[0.09] bg-white px-9 py-3.5 text-[16px] font-medium"
+            >
+              Coaching
+            </Link>
           </div>
         </div>
-      </div>
+      </section>
 
-      <style jsx global>{`
-        @keyframes expand {
-          from {
-            width: 0;
-          }
-          to {
-            width: 3rem;
-          }
-        }
-        
-        @keyframes blink {
-          0%, 50% {
-            opacity: 1;
-          }
-          51%, 100% {
-            opacity: 0;
-          }
-        }
-        
-        .animate-expand {
-          animation: expand 0.8s ease-out;
-        }
-        
-        .animate-blink {
-          animation: blink 1s infinite;
-        }
-      `}</style>
+      <footer className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-4 border-t border-black/[0.07] px-4 py-8 text-[14px] text-black/45 sm:px-8 lg:px-[86px]">
+        <span className="font-serif text-[18px] text-black/80">Anish Polakala</span>
+        <div className="flex gap-6">
+          <a href="https://www.linkedin.com/in/anishpolakala/" target="_blank" rel="noreferrer" className="hover:text-black">LinkedIn</a>
+          <a href="https://www.instagram.com/anishtweaksout/" target="_blank" rel="noreferrer" className="hover:text-black">Instagram</a>
+          <a href="mailto:anish.polakala@gmail.com" className="hover:text-black">Email</a>
+        </div>
+        <span>© {new Date().getFullYear()} · Berkeley, CA</span>
+      </footer>
+
+      {/* chat bubble */}
+      <a
+        href="mailto:anish.polakala@gmail.com"
+        aria-label="Email Anish"
+        className="fixed bottom-8 right-8 z-[150] grid size-14 place-items-center rounded-full bg-[#7C3AED] text-white shadow-[0_8px_24px_-6px_rgba(109,40,217,0.6)] transition-transform hover:scale-105"
+      >
+        <MessageCircle size={24} strokeWidth={1.8} />
+      </a>
     </div>
   );
 }
