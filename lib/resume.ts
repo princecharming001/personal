@@ -62,7 +62,7 @@ export const journey: { when: string; title: string; body: string; org?: string 
   {
     when: "First exit",
     title: "Telemedicine for ESL patients",
-    body: "Built a care platform for patients who don't speak English and sold it to a hospital chain.",
+    body: "Built a care platform for patients who don't speak English and sold it to a small clinic. A very small exit, but my first.",
   },
   {
     when: "2019",
