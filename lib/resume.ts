@@ -1,128 +1,130 @@
-export type Role = {
-  title: string;
-  org: string;
-  href?: string;
-  place: string;
-  dates: string;
-  tag?: string;
-  bullets: string[];
+/** Square brand marks pulled from each organization's own site. */
+export const logos: Record<string, string> = {
+  Palo: "/logos/palo.svg",
+  Lemonhat: "/logos/lemonhat.png",
+  Prosimo: "/logos/prosimo-icon.png",
+  "Palo Alto Networks": "/logos/panw.png",
+  Sonatus: "/logos/sonatus-icon.png",
+  "Blackskies Investments": "/logos/blackskies-icon.png",
+  "UC Berkeley": "/logos/berkeley-icon.svg",
 };
 
-export const experience: Role[] = [
+export const contact = {
+  email: "anish.polakala@gmail.com",
+  linkedin: "https://www.linkedin.com/in/anishpolakala/",
+  instagram: "https://www.instagram.com/anishtweaksout/",
+};
+
+/** What I'm doing right now — most important first. */
+export const now: { role: string; org: string; href?: string; since: string; note: string }[] = [
   {
-    title: "Chief Product Officer",
+    role: "Chief Product Officer",
     org: "Palo",
     href: "https://www.palo.ai/",
-    place: "Palo Alto, CA",
-    dates: "May 2026 – Present",
-    tag: "AI content engine",
-    bullets: [
-      "Run daily syncs with 10+ engineers and creators, turning what we learn about hooks, pacing and trends into the core logic of the AI content engine.",
-      "Built a 300-case eval set of past viral videos and flops to grade AI scripts against — the team's first objective quality metric. First-draft approval went from 40% to 75% in 6 weeks.",
-    ],
+    since: "May 2026",
+    note: "Leading product for an AI content engine. Built the eval set that took first-draft approval from 40% to 75%.",
   },
   {
-    title: "Product Manager",
-    org: "Freelance",
-    place: "Berkeley, CA",
-    dates: "Apr 2025 – Present",
-    tag: "Creator platforms",
-    bullets: [
-      "Launched coaching platforms for 15+ wellness creators, now doing $70K in monthly revenue for clients.",
-      "Ran sentiment and keyword analysis on 250K+ comments and DMs; the opportunities it surfaced became features and course modules that lifted free-to-paid conversion 150%.",
-    ],
-  },
-  {
-    title: "Cofounder & CPO",
-    org: "Lemonhat",
-    href: "https://www.lemonhat.io/",
-    place: "Milpitas, CA",
-    dates: "Oct 2020 – Dec 2025",
-    tag: "Acquired",
-    bullets: [
-      "Scaled a farm-to-door delivery platform to 118K+ users and $6.2M in revenue, ending in a 7-figure acquisition.",
-      "Ran 600+ focus groups with 40+ partner farms over 5 years, found 70+ lbs of weekly waste from overharvesting, and shipped forecasting that cut spoilage 20%.",
-      "Mapped 10K+ orders by neighborhood and hour, piloted batched delivery in 3 cities, then rolled it out company-wide after it cut delivery costs 35%.",
-    ],
-  },
-  {
-    title: "Product Manager",
-    org: "Prosimo",
-    place: "San Jose, CA",
-    dates: "Jun 2019 – Feb 2025",
-    tag: "Acq. by Palo Alto Networks",
-    bullets: [
-      "Owned a multicloud traffic dashboard end to end — launched to 20 enterprise customers and adopted by 8 of the top 15 accounts within a quarter.",
-      "Trained and managed a 10-person sales team, closing 7-figure enterprise deals through tailored technical demos.",
-      "Ran weekly syncs with enterprise clients like the NBA, Verizon and Rakuten, turning recurring pain points into PRDs behind 15+ roadmap releases.",
-    ],
-  },
-];
-
-export const leadership: Role[] = [
-  {
-    title: "Head Researcher",
+    role: "Head Researcher",
     org: "UC Berkeley",
-    place: "Berkeley, CA",
-    dates: "Aug 2025 – Present",
-    tag: "Voice-first AI",
-    bullets: [
-      "Interviewed 100+ community members across rural India to learn how first-time smartphone users decide, defining requirements for a voice-first sanitation AI reaching 10,000+ people.",
-      "Logged 2,500+ sessions, trained a random forest to predict task abandonment, then A/B tested the top features — drop-off fell 45%.",
-    ],
+    since: "Aug 2025",
+    note: "Designing a voice-first sanitation AI for first-time smartphone users in rural India, reaching 10,000+ people.",
   },
   {
-    title: "President of Ventures",
+    role: "President of Ventures",
     org: "Blackskies Investments",
-    place: "Berkeley, CA",
-    dates: "Jan 2026 – Present",
-    tag: "$1.6M AUM",
-    bullets: [
-      "Scout and diligence 25+ early-stage startups per cycle alongside the GP, informing $50K checks across a $1.6M portfolio.",
-      "Designed a 10-week PM bootcamp — research, market mapping, PRDs, prioritization, GTM — for 10+ new members.",
-    ],
+    since: "Jan 2026",
+    note: "Sourcing and diligencing early-stage startups for a $1.6M portfolio. Wrote and run a 10-week PM bootcamp.",
   },
   {
-    title: "Lead Product Consultant",
+    role: "Lead Product Consultant",
     org: "Sonatus",
-    place: "Berkeley, CA",
-    dates: "Aug 2026 – Present",
-    tag: "Semiconductor GTM",
-    bullets: [
-      "Led 8 analysts scoring 20+ verticals on buyer readiness, competition and technical fit; designed the semiconductor fab GTM plan adopted for 2027 pilots.",
-      "Synthesized 50+ plant-manager interviews into the insight that AI stalls on legacy equipment integration, shifting the engineering roadmap.",
-    ],
+    since: "Aug 2026",
+    note: "Led 8 analysts to design the semiconductor fab go-to-market plan adopted for 2027 pilots.",
+  },
+  {
+    role: "B.A. Data Science",
+    org: "UC Berkeley",
+    since: "Class of 2028",
+    note: "Coursework in programming structures, data structures and the principles of data science.",
   },
 ];
 
-export const stats = [
-  { value: "$6.2M", label: "revenue scaled at Lemonhat" },
-  { value: "118K+", label: "users on products I've led" },
-  { value: "2", label: "acquisitions" },
-  { value: "75%", label: "first-draft approval at Palo" },
+/** The journey, in order. Labels are ages/eras where there's no exact date. */
+export const journey: { when: string; title: string; body: string; org?: string }[] = [
+  { when: "Age 9", title: "Learned to code", body: "My dad taught me on the family computer." },
+  { when: "5th grade", title: "First hustle", body: "Sold my cousin's old math tests to classmates." },
+  {
+    when: "Agency",
+    title: "Websites for restaurants",
+    body: "Turned one-off sites into a small dev agency with four full-time developers.",
+  },
+  {
+    when: "First exit",
+    title: "Telemedicine for ESL patients",
+    body: "Built a care platform for patients who don't speak English and sold it to a hospital chain.",
+  },
+  {
+    when: "2019",
+    title: "Founding intern at Prosimo",
+    org: "Prosimo",
+    body: "Grew into a product manager shipping multicloud tooling for the NBA, Verizon and Rakuten. Prosimo was acquired by Palo Alto Networks.",
+  },
+  {
+    when: "2020",
+    title: "Cofounded Lemonhat",
+    org: "Lemonhat",
+    body: "Farm-to-door delivery for local farms. Scaled to 118K+ users and $6.2M in revenue before a 7-figure acquisition in 2025.",
+  },
+  {
+    when: "2025",
+    title: "Valedictorian, then Berkeley",
+    org: "UC Berkeley",
+    body: "Graduated top of my class with 63.22% attendance, then started data science at UC Berkeley. Skipped a CS final for a YC interview.",
+  },
+  {
+    when: "2025",
+    title: "Product for creators",
+    body: "Launched coaching platforms for 15+ wellness creators, now doing $70K a month for clients.",
+  },
+  {
+    when: "2026",
+    title: "CPO at Palo",
+    org: "Palo",
+    body: "Leading product at an AI content startup in Palo Alto.",
+  },
 ];
 
-export const skills = {
-  build: ["Python", "SQL", "Pandas", "Claude", "Cursor", "Databricks", "Figma", "Jira"],
-  product: [
-    "Customer interviews",
-    "PRDs",
-    "Roadmaps",
-    "Evals",
-    "A/B tests",
-    "GTM",
-    "Market mapping",
-    "Prototyping",
-  ],
-};
-
-export const lore = [
-  "first hustle: selling my cousin's old math tests in 5th grade",
-  "my dad taught me to code when I was 9",
-  "started building websites for restaurants — grew it into a dev agency with 4 full-time devs",
-  "built a telemedicine platform for ESL patients, sold to a hospital chain (first acquisition)",
-  "skipped school to found Lemonhat, a delivery system for local farms",
-  "founding hire at Prosimo, acquired by Palo Alto Networks",
-  "graduated valedictorian with 63.22% attendance",
-  "skipped my CS final for a YC interview",
+/** Outcomes worth bragging about, each with the move behind it. */
+export const achievements: { metric: string; title: string; body: string; org: string }[] = [
+  {
+    metric: "$6.2M",
+    title: "Lemonhat, scaled to acquisition",
+    org: "Lemonhat",
+    body: "Grew a farm-to-door platform to 118K+ users. Mapped 10K+ orders by neighborhood and hour, then rolled out batched delivery that cut costs 35%.",
+  },
+  {
+    metric: "40→75%",
+    title: "Palo's first quality metric",
+    org: "Palo",
+    body: "Built a 300-case eval set of viral videos and flops to grade AI scripts against. First-draft approval nearly doubled in six weeks.",
+  },
+  {
+    metric: "8 of 15",
+    title: "Top accounts adopted in a quarter",
+    org: "Prosimo",
+    body: "Owned Prosimo's multicloud traffic dashboard end to end, launched it to 20 enterprise customers, and closed 7-figure deals through technical demos.",
+  },
+  {
+    metric: "+150%",
+    title: "Free-to-paid for creator businesses",
+    org: "Freelance",
+    body: "Analyzed 250K+ comments and DMs to find what audiences actually wanted, then shipped it as features and course modules.",
+  },
+  {
+    metric: "−45%",
+    title: "Drop-off for first-time phone users",
+    org: "UC Berkeley",
+    body: "Interviewed 100+ people across rural India, logged 2,500+ sessions, trained a model to predict abandonment, and A/B tested the fixes.",
+  },
 ];

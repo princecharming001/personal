@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/admin/content": ["./data/**/*"],
   },
+  async redirects() {
+    return [{ source: "/coach", destination: "/", permanent: true }];
+  },
 };
 
 export default nextConfig;
