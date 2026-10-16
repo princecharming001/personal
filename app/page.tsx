@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { extractSnapshotBody } from "@/lib/extract-snapshot-body";
-import { achievements, contact, journey, logos, now } from "@/lib/resume";
+import { achievements, contact, journey, logos, now, orgLinks } from "@/lib/resume";
 import HalftoneFace from "./components/halftone-face";
 import { BerkeleyTime, Logo, Reveal } from "./components/site-bits";
 
@@ -15,6 +15,31 @@ const NAV = [
 ];
 
 const BUILT_AT = ["Palo", "Lemonhat", "Prosimo", "Palo Alto Networks", "Blackskies Investments", "Sonatus", "UC Berkeley"];
+
+const LINK_RE = new RegExp(`(${Object.keys(orgLinks).join("|")})`, "g");
+
+/** Wraps known org names in links to their sites. */
+function Linked({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(LINK_RE).map((part, i) =>
+        orgLinks[part] ? (
+          <a
+            key={i}
+            href={orgLinks[part]}
+            target="_blank"
+            rel="noreferrer"
+            className="underline decoration-black/20 underline-offset-4 transition-colors hover:text-[#7C3AED] hover:decoration-[#7C3AED]"
+          >
+            {part}
+          </a>
+        ) : (
+          part
+        ),
+      )}
+    </>
+  );
+}
 
 function Arrow({ up = false, size = 14 }: { up?: boolean; size?: number }) {
   return (
@@ -160,7 +185,15 @@ export default function Home() {
             {BUILT_AT.map((org) => (
               <li key={org} className="flex items-center gap-2 text-[13.5px] text-black/70">
                 <Logo org={org} size={24} />
-                {org === "Blackskies Investments" ? "Blackskies" : org}
+                {orgLinks[org] ? (
+                  <a href={orgLinks[org]} target="_blank" rel="noreferrer" className="transition-colors hover:text-[#7C3AED]">
+                    {org}
+                  </a>
+                ) : org === "Blackskies Investments" ? (
+                  "Blackskies"
+                ) : (
+                  org
+                )}
               </li>
             ))}
           </ul>
@@ -210,10 +243,12 @@ export default function Home() {
                   <p className="font-mono text-[12.5px] leading-[26px] text-black/40 max-sm:col-start-2">{step.when}</p>
                   <div className="max-sm:col-start-2">
                     <p className="flex items-center gap-2.5 text-[17px] font-medium tracking-[-0.01em]">
-                      {step.title}
+                      <span>
+                        <Linked text={step.title} />
+                      </span>
                       {step.org && <Logo org={step.org} size={20} />}
                     </p>
-                    <p className="mt-1.5 max-w-[560px] text-[15.5px] leading-relaxed text-black/55">{step.body}</p>
+                    <p className="mt-1.5 max-w-[560px] text-[15.5px] leading-relaxed text-black/55"><Linked text={step.body} /></p>
                   </div>
                 </li>
               </Reveal>
@@ -232,9 +267,11 @@ export default function Home() {
                 <div>
                   <p className="flex items-center gap-2.5 text-[17px] font-medium tracking-[-0.01em]">
                     {logos[a.org] && <Logo org={a.org} size={22} />}
-                    {a.title}
+                    <span>
+                      <Linked text={a.title} />
+                    </span>
                   </p>
-                  <p className="mt-2 max-w-[560px] text-[15.5px] leading-relaxed text-black/55">{a.body}</p>
+                  <p className="mt-2 max-w-[560px] text-[15.5px] leading-relaxed text-black/55"><Linked text={a.body} /></p>
                 </div>
               </li>
             </Reveal>

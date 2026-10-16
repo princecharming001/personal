@@ -9,6 +9,12 @@ export const logos: Record<string, string> = {
   "UC Berkeley": "/logos/berkeley-icon.svg",
 };
 
+/** Org names that become links wherever they appear in copy. */
+export const orgLinks: Record<string, string> = {
+  "Palo Alto Networks": "https://www.paloaltonetworks.com/",
+  Lemonhat: "https://www.lemonhat.io/",
+};
+
 export const contact = {
   email: "anish.polakala@gmail.com",
   linkedin: "https://www.linkedin.com/in/anishpolakala/",
