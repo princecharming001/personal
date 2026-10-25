@@ -14,7 +14,7 @@ const NAV = [
   { label: "Contact", href: "#contact" },
 ];
 
-const BUILT_AT = ["Palo", "Lemonhat", "Prosimo", "Palo Alto Networks", "Blackskies Investments", "Sonatus", "UC Berkeley"];
+const BUILT_AT = ["Palo", "Lemonhat", "Prosimo", "Palo Alto Networks", "Sonatus", "UC Berkeley"];
 
 const LINK_RE = new RegExp(`(${Object.keys(orgLinks).join("|")})`, "g");
 
@@ -189,8 +189,6 @@ export default function Home() {
                   <a href={orgLinks[org]} target="_blank" rel="noreferrer" className="transition-colors hover:text-[#7C3AED]">
                     {org}
                   </a>
-                ) : org === "Blackskies Investments" ? (
-                  "Blackskies"
                 ) : (
                   org
                 )}

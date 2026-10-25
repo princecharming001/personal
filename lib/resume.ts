@@ -5,7 +5,6 @@ export const logos: Record<string, string> = {
   Prosimo: "/logos/prosimo-icon.png",
   "Palo Alto Networks": "/logos/panw.png",
   Sonatus: "/logos/sonatus-icon.png",
-  "Blackskies Investments": "/logos/blackskies-icon.png",
   "UC Berkeley": "/logos/berkeley-icon.svg",
 };
 
@@ -35,12 +34,6 @@ export const now: { role: string; org: string; href?: string; since: string; not
     org: "UC Berkeley",
     since: "Aug 2025",
     note: "Designing a voice-first sanitation AI for first-time smartphone users in rural India, reaching 10,000+ people.",
-  },
-  {
-    role: "President of Ventures",
-    org: "Blackskies Investments",
-    since: "Jan 2026",
-    note: "Sourcing and diligencing early-stage startups for a $1.6M portfolio. Wrote and run a 10-week PM bootcamp.",
   },
   {
     role: "Lead Product Consultant",
